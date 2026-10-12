@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="ko" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>9 Sig · TQQQ 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--fg:#0f172a;--mut:#64748b;--line:#e2e8f0;--acc:#4f46e5;--acc2:#06b6d4;--buy:#10b981;--sell:#f43f5e;--hold:#94a3b8;--warn:#f59e0b;--sh:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(15,23,42,.06)}
+[data-theme=dark]{--bg:#0b1020;--card:#121a2f;--fg:#e5e9f5;--mut:#8a96b3;--line:#222c47;--acc:#818cf8;--acc2:#22d3ee;--sh:0 1px 2px rgba(0,0,0,.3),0 8px 30px rgba(0,0,0,.35)}
+*{box-sizing:border-box}body{margin:0;font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;background:var(--bg);color:var(--fg);transition:background .3s,color .3s;-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+.bar{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 20px}.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;color:transparent}
+nav{display:flex;gap:4px;overflow-x:auto;margin-left:auto;scrollbar-width:none}nav button{all:unset;cursor:pointer;padding:8px 12px;border-radius:10px;color:var(--mut);font-weight:600;font-size:14px;white-space:nowrap}nav button.on{background:var(--card);color:var(--fg);box-shadow:var(--sh)}
+.tg{all:unset;cursor:pointer;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--card);box-shadow:var(--sh);font-size:18px}
+main{max-width:1200px;margin:auto;padding:20px}section{animation:f .35s ease}@keyframes f{from{opacity:0;transform:translateY(6px)}}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}.c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--sh);min-width:0}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.k{font-size:13px;color:var(--mut);font-weight:600}.v{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}.sub{font-size:12.5px;color:var(--mut);margin-top:4px}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}.p-buy{background:color-mix(in srgb,var(--buy) 18%,transparent);color:var(--buy)}.p-sell{background:color-mix(in srgb,var(--sell) 18%,transparent);color:var(--sell)}.p-hold{background:color-mix(in srgb,var(--hold) 20%,transparent);color:var(--hold)}
+.dd{font-size:34px;font-weight:900;background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;color:transparent}
+h2{font-size:20px;margin:4px 0 14px;letter-spacing:-.02em}h3{font-size:15px;margin:0 0 10px}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);font-weight:600}label.ck{flex-direction:row;align-items:center}
+input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}input:focus{border-color:var(--acc)}
+.btn{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:12px;padding:10px 16px;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#fff;margin:4px 4px 0 0}.btn.g{background:var(--bg);color:var(--fg);border:1px solid var(--line)}.btn.r{background:var(--sell)}.btn.sm{padding:5px 9px;font-size:12px;border-radius:8px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}th{color:var(--mut);font-weight:600;text-align:right;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}td:first-child,th:first-child,td.l{text-align:left}
+td[contenteditable]{background:color-mix(in srgb,var(--acc) 7%,transparent);border-radius:4px;cursor:text}td.note{white-space:normal;min-width:200px;text-align:left}
+.sig{font-size:30px;font-weight:900;padding:10px 22px;border-radius:14px;display:inline-block;color:#fff}.sig.buy{background:var(--buy)}.sig.sell{background:var(--sell)}.sig.hold{background:var(--hold)}
+.note{font-size:13px;color:var(--mut);line-height:1.6}.alert{border-left:4px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6}
+.ch{position:relative;height:300px}.donut{position:relative;height:150px}.rules li{margin:8px 0;line-height:1.65}
+@media(max-width:900px){.s3{grid-column:span 6}.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
+@media(max-width:560px){.bar{flex-wrap:wrap;padding:10px 14px}nav{order:3;width:100%;margin:0}main{padding:14px}.grid{gap:12px}.s3{grid-column:span 12}.v{font-size:22px}.ch{height:240px}}
+</style></head><body>
+<div class="top"><div class="bar"><div class="logo"><span>9 Sig</span> · TQQQ</div>
+<nav><button data-t="dash">대시보드</button><button data-t="quarter">분기 입력</button><button data-t="history">기록</button><button data-t="charts">차트</button><button data-t="bt">백테스트</button><button data-t="setup">설정</button><button data-t="rules">규칙 설명</button></nav>
+<button class="tg" id="theme" title="다크/라이트">🌙</button></div></div>
+<main>
+<section id="dash"><div id="first" class="c" hidden><h2>👋 처음 오셨나요?</h2><p class="note">설정 탭에서 시작일·초기 자본·TQQQ 비중·시작 가격을 입력하고 ‘이 설정으로 새로 시작’을 누르세요. 기존 백업이 있다면 기록 탭에서 JSON을 가져오세요.</p><button class="btn" onclick="tab('setup')">설정 시작</button><button class="btn g" onclick="tab('history')">JSON 가져오기</button></div><div class="grid">
+<div class="c s3"><div class="k">총자산</div><div class="v" id="kTot"></div><div class="sub" id="kTotS"></div></div>
+<div class="c s3"><div class="k">TQQQ 평가액</div><div class="v" id="kT"></div><div class="sub" id="kTS"></div></div>
+<div class="c s3"><div class="k">채권/현금 평가액</div><div class="v" id="kB"></div><div class="sub" id="kBS"></div></div>
+<div class="c s3"><div class="k">다음 리밸런싱일</div><div class="dd" id="kD"></div><div class="sub" id="kDS"></div></div>
+<div class="c s4"><div class="k">비중</div><div class="donut"><canvas id="cd"></canvas></div></div>
+<div class="c s4"><div class="k">다음 목표 TQQQ 잔액 (×1.09)</div><div class="v" id="kN"></div><div class="sub" id="kNS"></div></div>
+<div class="c s4"><div class="k">최근 신호</div><div class="v" id="kL"></div><div class="sub" id="kLS"></div></div>
+<div class="c s8"><h3>TQQQ 잔액 vs 9% 시그널선</h3><div class="ch"><canvas id="cdash"></canvas></div></div>
+<div class="c s4"><h3>메모</h3><div id="memo" class="note"></div></div>
+</div></section>
+<section id="quarter" hidden><div class="grid"><div class="c s7"><h2>분기 입력</h2>
+<div class="form"><label>날짜<input type="date" id="qDate"></label><label>TQQQ 현재가 ($)<input type="number" step="0.01" id="qPrice"></label>
+<label>보유 TQQQ 주식 수<input type="number" step="any" id="qShares"></label><label>채권/현금 잔액 ($)<input type="number" step="0.01" id="qCash"></label>
+<label>신규 입금 ($)<input type="number" step="0.01" id="qContrib" value="0"></label><label>SPY 분기 종가 (30 down 판정, 선택)<input type="number" step="0.01" id="qSpy"></label></div>
+<button class="btn" onclick="calc()">신호 계산</button><button class="btn g" onclick="fetchPrice()">현재가 조회</button>
+<p class="note">채권 잔액은 이자·평가 변동을 반영한 현재 값을 입력하세요. 입금은 거래 전에 채권/현금에 더해지고, 목표선은 입금의 절반만큼 올라갑니다.</p></div>
+<div class="c s5"><div id="qOut" class="note">값을 입력하고 ‘신호 계산’을 누르세요.</div></div></div></section>
+<section id="history" hidden><div class="c"><h2>기록</h2><p class="note">색칠된 칸은 클릭해 수정할 수 있습니다. 수정·삭제 시 이후 분기의 목표가 자동 재계산됩니다 (실제 체결 수량은 기록대로 유지).</p>
+<div class="tw"><table id="hist"></table></div>
+<button class="btn g" onclick="exJSON()">JSON 내보내기</button><button class="btn g" onclick="exCSV()">CSV 내보내기</button><label class="btn g" style="display:inline-flex">JSON 가져오기<input type="file" accept=".json,application/json" hidden onchange="imJSON(this.files[0])"></label></div></section>
+<section id="charts" hidden><div class="grid"><div class="c s12"><h3>포트폴리오 가치</h3><div class="ch"><canvas id="c1"></canvas></div></div><div class="c s6"><h3>TQQQ 잔액 vs 9% 시그널선</h3><div class="ch"><canvas id="c2"></canvas></div></div><div class="c s6"><h3>채권/현금 비중</h3><div class="ch"><canvas id="c3"></canvas></div></div></div></section>
+<section id="bt" hidden><div class="grid"><div class="c s12"><h2>백테스트 <span class="note">실제 분기말 수정종가 (yfinance)</span></h2><label style="max-width:220px">시작 분기<select id="btStart" onchange="runBT()"></select></label><div id="btOut"></div></div>
+<div class="c s12"><div class="ch" style="height:360px"><canvas id="c4"></canvas></div><details><summary class="note">분기별 로그</summary><div class="tw"><table id="btLog"></table></div></details>
+<p class="note">현금 측은 AGG 총수익으로 성장, 소수점 주식, 수수료·세금 미반영. 분기말 데이터라 실제 일간 MDD는 더 큽니다. 마지막 행(2026-10-12)은 미완료 분기입니다.</p></div></div></section>
+<section id="setup" hidden><div class="c"><h2>설정 <span class="note">통화 USD</span></h2><div class="form">
+<label>시작일<input type="date" id="sStart"></label><label>초기 자본 ($)<input type="number" id="sCap"></label><label>TQQQ 비중 (%)<input type="number" id="sRatio"></label><label>시작 TQQQ 가격 ($)<input type="number" step="0.01" id="sPrice"></label>
+<label>매수 스로틀 (채권의 최대 사용 %)<input type="number" id="sThr"></label><label>30 down 시 무시할 매도 신호 횟수<input type="number" id="sSk"></label>
+<label>(비공식) 채권 비중 > X% 시 리밸런스<input type="number" id="sCap2" placeholder="비움 = 사용 안 함"></label>
+<label class="ck"><input type="checkbox" id="sSpike"> 스파이크 리셋</label><label class="ck"><input type="checkbox" id="sFrac"> 소수점 주식</label></div>
+<button class="btn" onclick="saveSetup(false)">설정 저장</button><button class="btn g" onclick="saveSetup(true)">이 설정으로 새로 시작</button><button class="btn r" onclick="resetSeed()">모든 데이터 초기화</button>
+<p class="note">데이터는 이 브라우저의 localStorage에 저장됩니다. JSON으로 정기 백업하세요.</p></div></section>
+<section id="rules" hidden><div class="c rules"><h2>규칙 설명</h2><ol>
+<li><b>구성</b>: TQQQ + 채권펀드(AGG/BND/SCHZ 또는 현금·BIL). 기본 리셋 비율 60/40 (편집 가능).</li>
+<li><b>분기 신호</b>: 목표 = 직전 분기 거래 후 TQQQ 잔액 × 1.09 + 신규 입금 ÷ 2. 입금 전액은 채권 쪽에 넣음 (『The 3% Signal』 방식).</li>
+<li>잔액 &lt; 목표 → 부족분 매수, 잔액 &gt; 목표 → 초과분 매도. 수량 = 금액 ÷ 현재가 (기본 내림).</li>
+<li><b>90% 매수 스로틀</b>: 한 번의 매수는 채권 잔액의 90%까지. 부족하면 가능한 만큼만.</li>
+<li><b>30 down, stick around</b>: SPY 분기 종가가 직전 8분기 최고 분기 종가 대비 30% 이상 하락 시, 이후 매도 신호 2회 무시(3Sig 원서는 4회), 매수는 계속.</li>
+<li><b>(가정)</b> 30 down 기간 후 첫 매도 신호에서 60/40 리셋. 정확한 시점 공식은 비공개 레터 내용이라 이 앱의 해석.</li>
+<li><b>스파이크 리셋</b>: 분기 상승 ≥100%, 거래 후 TQQQ 비중 60~100%, 30 down 기간 아님 → 60/40. (Kelly는 분기 중 2배 도달 즉시; 앱은 분기 입력 시만 판정.)</li>
+<li>“채권 &gt; 40% 리밸런스”는 공식 규칙으로 확인되지 않아 기본 꺼진 선택 옵션.</li>
+<li>출처: jasonkelly.com/resources/strategies, jasonkelly.com/2023/02/tqqq-and-volatility-decay, jasonkelly.com/3sig, 『The 3% Signal』.</li>
+<li>⚠ 투자 조언 아님. 프랑스 거주자는 PRIIPs로 미국 ETF 매수가 제한될 수 있으며, 세금(PFU)·EUR/USD 환율은 계산하지 않습니다.</li></ol></div></section>
+</main><script>
+const DATA=[["2010-03-31", 0.2748, 41.7562, 87.4598, 65.2555], ["2010-06-30", 0.1825, 37.174, 77.5261, 67.7818], ["2010-09-30", 0.27, 42.8097, 86.1792, 69.2459], ["2010-12-31", 0.3654, 47.6062, 95.4528, 68.3078], ["2011-03-31", 0.4205, 50.2733, 101.0821, 68.2952], ["2011-06-30", 0.4063, 50.0526, 101.1082, 69.9131], ["2011-09-30", 0.2925, 46.1373, 87.1379, 72.7293], ["2011-12-31", 0.336, 49.2609, 97.2617, 73.5652], ["2012-03-31", 0.5912, 59.7031, 109.605, 73.6645], ["2012-06-30", 0.4941, 56.8372, 106.4877, 75.1185], ["2012-09-30", 0.5993, 60.9171, 113.2467, 76.3447], ["2012-12-31", 0.5116, 58.1833, 112.8141, 76.3275], ["2013-03-31", 0.6024, 61.7563, 124.6626, 76.3767], ["2013-06-30", 0.656, 64.0177, 128.3219, 74.3903], ["2013-09-30", 0.8903, 71.066, 135.0483, 74.8031], ["2013-12-31", 1.2265, 79.4983, 149.2618, 74.818], ["2014-03-31", 1.2146, 79.747, 151.8038, 76.1439], ["2014-06-30", 1.4783, 85.6527, 159.6354, 77.63], ["2014-09-30", 1.7102, 90.3179, 161.4469, 77.8439], ["2014-12-31", 1.9267, 94.7472, 169.3582, 79.306], ["2015-03-31", 2.0365, 97.1265, 170.8507, 80.51], ["2015-06-30", 2.1033, 98.7051, 171.1994, 79.0388], ["2015-09-30", 1.7241, 94.0381, 160.2016, 80.0972], ["2015-12-31", 2.2587, 103.6874, 171.4485, 79.6872], ["2016-03-31", 2.0248, 101.522, 173.7276, 82.1034], ["2016-06-30", 1.9046, 100.245, 177.9958, 83.917], ["2016-09-30", 2.5427, 110.9439, 184.7192, 84.2356], ["2016-12-31", 2.5158, 111.0471, 192.0187, 81.6107], ["2017-03-31", 3.4885, 124.3331, 203.3885, 82.2672], ["2017-06-30", 3.8622, 129.6256, 209.6342, 83.5684], ["2017-09-30", 4.5183, 137.2806, 218.8907, 84.1531], ["2017-12-31", 5.486, 147.319, 233.6972, 84.5101], ["2018-03-31", 5.6916, 151.6979, 231.3711, 83.2716], ["2018-06-30", 6.7756, 162.9593, 239.5904, 83.1192], ["2018-09-30", 8.4402, 176.7008, 257.9218, 83.049], ["2018-12-31", 4.4004, 147.133, 223.0195, 84.7981], ["2019-03-31", 6.7337, 171.6714, 253.1852, 87.2874], ["2019-06-30", 7.341, 178.8311, 263.8916, 89.7524], ["2019-09-30", 7.3244, 181.1781, 268.5213, 91.852], ["2019-12-31", 10.2897, 204.4583, 292.6549, 91.9683], ["2020-03-31", 5.6638, 183.4901, 235.7403, 94.8192], ["2020-06-30", 11.6093, 239.0292, 283.2696, 97.7379], ["2020-09-30", 15.5623, 268.2224, 308.8725, 98.1296], ["2020-12-31", 21.6137, 303.4288, 346.3033, 98.844], ["2021-03-31", 21.6993, 309.0314, 368.2997, 95.5111], ["2021-06-30", 29.1273, 343.6125, 399.0869, 97.2045], ["2021-09-30", 29.6195, 347.4195, 401.3757, 97.1932], ["2021-12-31", 39.5489, 386.628, 445.7919, 97.0984], ["2022-03-31", 27.6674, 352.7496, 425.221, 91.4222], ["2022-06-30", 11.4131, 273.2352, 356.7167, 87.2355], ["2022-09-30", 9.1876, 261.0108, 339.1264, 83.1334], ["2022-12-31", 8.2697, 260.6763, 364.7676, 84.4546], ["2023-03-31", 13.5875, 314.6625, 391.9728, 87.1843], ["2023-06-30", 19.7753, 362.7024, 425.9974, 86.3635], ["2023-09-30", 17.2409, 352.2643, 412.2626, 83.5831], ["2023-12-31", 24.6477, 403.6717, 460.2485, 89.2307], ["2024-03-31", 30.0352, 438.2479, 508.0686, 88.5743], ["2024-06-30", 36.1546, 473.644, 530.3174, 88.599], ["2024-09-30", 35.6176, 483.1798, 560.8179, 93.2956], ["2024-12-31", 39.0093, 506.9239, 574.788, 90.399], ["2025-03-31", 28.3309, 465.6637, 550.2625, 92.874], ["2025-06-30", 41.1527, 548.4244, 609.5653, 94.0575], ["2025-09-30", 51.3164, 597.5623, 659.0695, 95.9955], ["2025-12-31", 52.4107, 612.2249, 676.635, 96.9003], ["2026-03-31", 41.504, 575.9462, 647.0621, 96.9241], ["2026-06-30", 80.8437, 735.6335, 744.9202, 97.6204], ["2026-09-30", 78.03, 739.77, 762.63, 94.206], ["2026-10-12", 79.8099, 746.66, 778.31, 94.615]];
+// ===== 9Sig core logic (pure functions) =====
+const Sig = {
+  // SPY 30-down check: close <= 70% of highest quarterly close among previous 8 quarters
+  isThirtyDown(spyHist, spyNow){ const h=spyHist.slice(-8).filter(x=>x>0); if(!h.length||!(spyNow>0)) return false; return spyNow <= 0.7*Math.max(...h); },
+  // p: {prevBal, prevPrice, price, shares, cash, contrib, cfg:{growth,throttle,ratio,fractional,spikeReset}, skipSell(bool), resetAfter30(bool)}
+  signal(p){
+    const c=p.cfg, price=p.price, cash=p.cash+(p.contrib||0);
+    const actual=p.shares*price, total=actual+cash;
+    const target=p.prevBal*(1+c.growth)+(p.contrib||0)/2;
+    const r={target, actual, total, cashIn:cash, diff:target-actual, action:'유지', amount:0, qty:0, note:[]};
+    const round=q=>c.fractional?Math.round(q*1e4)/1e4:Math.floor(q+1e-9);
+    const resetTo=(why)=>{ const want=total*c.ratio, d=want-actual; r.qty=round(Math.abs(d)/price)*Math.sign(d); r.action=d>=0?'매수':'매도'; r.note.push(why); };
+    if(p.resetAfter30){ resetTo('30 down 기간 종료 → 60/40 리셋'); }
+    else if(r.diff>0){ const amt=Math.min(r.diff, cash*c.throttle); r.qty=round(amt/price); r.action='매수'; if(amt<r.diff) r.note.push('현금 부족/90% 스로틀로 일부만 매수'); }
+    else if(r.diff<0){ if(p.skipSell){ r.action='유지'; r.note.push('30 down, stick around: 매도 신호 무시'); } else { r.qty=-round(-r.diff/price); r.action='매도'; } }
+    if(r.qty===0 && r.action!=='유지'){ r.action='유지'; }
+    r.amount=r.qty*price; r.newShares=p.shares+r.qty; r.newBal=r.newShares*price; r.newCash=cash-r.amount;
+    // spike reset: quarterly gain >=100%, post-trade TQQQ alloc 60-100%, not in 30-down
+    const gain=p.prevPrice>0?price/p.prevPrice-1:0;
+    if(c.spikeReset && gain>=1 && !p.in30 && r.newBal/total>=0.6 && r.newBal/total<=1 && !p.resetAfter30){
+      resetTo('스파이크 리셋 (분기 +100% 이상) → 60/40'); r.amount=r.qty*price; r.newShares=p.shares+r.qty; r.newBal=r.newShares*price; r.newCash=cash-r.amount; }
+    if(c.bondCap && r.newCash/total>c.bondCap){ resetTo(`채권/현금 비중 > ${(c.bondCap*100).toFixed(0)}% → 리밸런스(사용자 옵션)`); r.amount=r.qty*price; r.newShares=p.shares+r.qty; r.newBal=r.newShares*price; r.newCash=cash-r.amount; }
+    r.cashRatio=r.newCash/total; return r;
+  },
+  // state machine for 30-down: returns {skipSell, resetAfter30, state}
+  thirty(state, isDown, wouldSell, skips){
+    state={...(state||{left:0,active:false})};
+    if(isDown){ state.active=true; state.left=skips; }
+    let skipSell=false, resetAfter30=false;
+    if(state.active && wouldSell){ if(state.left>0){ skipSell=true; state.left--; } else { resetAfter30=true; state.active=false; } }
+    return {skipSell, resetAfter30, state, in30:state.active};
+  },
+  backtest(data, cfg, start=0){ // data rows [date,tqqq,qqq,spy,agg]
+    let d=data.slice(start), p0=d[0][1], cap=10000, sh=cap*cfg.ratio/p0, cash=cap*(1-cfg.ratio), st=null, spy=[d[0][3]];
+    const out=[{date:d[0][0], v:cap, bh:cap, qqq:cap, cr:1-cfg.ratio, trade:0}];
+    let prevBal=sh*p0, prevPrice=p0; const fc={...cfg, fractional:true};
+    for(let i=1;i<d.length;i++){ const [dt,pr,qq,sp,ag]=d[i]; cash*=ag/d[i-1][4];
+      const down=Sig.isThirtyDown(spy,sp); const target=prevBal*(1+cfg.growth);
+      const t=Sig.thirty(st,down,sh*pr>target,cfg.skips); st=t.state;
+      const r=Sig.signal({prevBal,prevPrice,price:pr,shares:sh,cash,contrib:0,cfg:fc,skipSell:t.skipSell,resetAfter30:t.resetAfter30,in30:t.in30});
+      sh=r.newShares; cash=r.newCash; prevBal=r.newBal; prevPrice=pr; spy.push(sp);
+      out.push({date:dt, v:sh*pr+cash, bh:cap*pr/p0, qqq:cap*qq/d[0][2], cr:r.cashRatio, trade:r.amount, note:r.note.join('; ')}); }
+    return out;
+  },
+  stats(vals, dates){ const y=(new Date(dates.at(-1))-new Date(dates[0]))/31557600000; let pk=-Infinity,mdd=0; for(const v of vals){pk=Math.max(pk,v); mdd=Math.min(mdd,v/pk-1);} return {cagr:Math.pow(vals.at(-1)/vals[0],1/y)-1, mdd, mult:vals.at(-1)/vals[0], years:y}; }
+};
+if(typeof module!=='undefined') module.exports=Sig;
+// Recompute derived fields of a log after edits (actual trades/qty are kept as recorded)
+Sig.recompute=function(log,cfg){ for(let i=0;i<log.length;i++){ const x=log[i];
+  x.amount=+(x.qty*x.price).toFixed(2); x.newShares=+((x.shares||0)+x.qty).toFixed(4); x.newBal=+(x.newShares*x.price).toFixed(2);
+  if(i===0){x.target=null; continue;} const p=log[i-1];
+  x.target=+(p.newBal*(1+cfg.growth)+(x.contrib||0)/2).toFixed(2); x.diff=+(x.target-x.shares*x.price).toFixed(2);
+  x.action=x.qty>0?'매수':x.qty<0?'매도':'유지'; } return log; };
+Sig.nextQuarterEnd=function(dateStr){ const d=new Date(dateStr+'T00:00:00'); let m=Math.floor(d.getMonth()/3)*3+2; let e=new Date(d.getFullYear(),m+1,0);
+  if(e<=d){ e=new Date(d.getFullYear(),m+4,0);} return e; };
+const $=s=>document.querySelector(s),KEY='9sig_v1',fmt=(v,d=2)=>(v==null||isNaN(v))?'-':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}),usd=(v,d=2)=>(v<0?'-$':'$')+fmt(Math.abs(v),d),pct=v=>isNaN(v)?'-':(v*100).toFixed(1)+'%';
+const CFG0={start:'',capital:10000,ratio:.6,growth:.09,throttle:.9,skips:2,spikeReset:true,fractional:false,bondCap:0,price0:0};
+function seed(){return{cfg:{...CFG0},log:[]};}
+let S0=JSON.parse(localStorage.getItem(KEY)||'null');if(!S0||!S0.log)S0=seed();
+let pending=null,charts={};
+const save=()=>{Sig.recompute(S0.log,S0.cfg);localStorage.setItem(KEY,JSON.stringify(S0));render();};
+function resetSeed(){if(confirm('모든 기록과 설정을 삭제할까요? (먼저 JSON 백업 권장)')){S0=seed();loadSetup();save();}}
+function tab(id){document.querySelectorAll('section').forEach(s=>s.hidden=s.id!==id);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));({dash:drawDash,charts:drawCharts,bt:runBT})[id]?.();}
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function setTheme(t){document.documentElement.dataset.theme=t;localStorage.setItem(KEY+'_theme',t);$('#theme').textContent=t==='dark'?'☀️':'🌙';if(window.Chart){Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');}const cur=document.querySelector('nav button.on')?.dataset.t;if(cur)tab(cur);}
+function loadSetup(){const c=S0.cfg;$('#sStart').value=c.start;$('#sCap').value=c.capital;$('#sRatio').value=c.ratio*100;$('#sPrice').value=c.price0||'';$('#sThr').value=c.throttle*100;$('#sSk').value=c.skips;$('#sSpike').checked=c.spikeReset;$('#sFrac').checked=c.fractional;$('#sCap2').value=c.bondCap?c.bondCap*100:'';}
+function saveSetup(init){const c=S0.cfg;c.start=$('#sStart').value;c.capital=+$('#sCap').value;c.ratio=+$('#sRatio').value/100;c.price0=+$('#sPrice').value;c.throttle=+$('#sThr').value/100;c.skips=+$('#sSk').value;c.spikeReset=$('#sSpike').checked;c.fractional=$('#sFrac').checked;c.bondCap=(+$('#sCap2').value||0)/100;
+ if(init){if(!c.start||!(c.price0>0)||!(c.capital>0))return alert('시작일, 초기자본, 시작 TQQQ 가격을 입력하세요');if(!confirm('기존 기록을 지우고 새로 시작할까요?'))return;
+  const sh=c.fractional?Math.round(c.capital*c.ratio/c.price0*1e4)/1e4:Math.floor(c.capital*c.ratio/c.price0);
+  S0.log=[{date:c.start,price:c.price0,shares:0,cash:c.capital,contrib:0,spy:null,qty:sh,newCash:+(c.capital-sh*c.price0).toFixed(2),note:'초기 배분',thirty:null}];}
+ save();alert('저장됨');}
+function calc(){const L=S0.log.at(-1);if(!L)return alert('먼저 설정에서 시작하세요');
+ const price=+$('#qPrice').value,shares=+$('#qShares').value,cash=+$('#qCash').value,contrib=+$('#qContrib').value||0,spy=+$('#qSpy').value||0;
+ if(!(price>0))return alert('TQQQ 가격을 입력하세요');const c=S0.cfg;
+ const down=Sig.isThirtyDown(S0.log.map(x=>x.spy).filter(x=>x>0),spy);
+ const target=L.newBal*(1+c.growth)+contrib/2;const t=Sig.thirty(L.thirty,down,shares*price>target,c.skips);
+ const r=Sig.signal({prevBal:L.newBal,prevPrice:L.price,price,shares,cash,contrib,cfg:c,skipSell:t.skipSell,resetAfter30:t.resetAfter30,in30:t.in30});
+ if(down)r.note.unshift('SPY 30% 하락 감지 → 다음 '+c.skips+'회 매도 신호 무시');
+ pending={date:$('#qDate').value||new Date().toISOString().slice(0,10),price,shares,cash:cash+contrib,contrib,spy:spy||null,qty:r.qty,newCash:+r.newCash.toFixed(2),note:r.note.join('; '),thirty:t.state};
+ const cls=r.action==='매수'?'buy':r.action==='매도'?'sell':'hold',dp=c.fractional?4:0;
+ $('#qOut').innerHTML=`<div class="sig ${cls}">${r.action}</div><table style="margin-top:12px">
+ <tr><td>목표 (${usd(L.newBal)}×1.09 + 입금/2)</td><td><b>${usd(r.target)}</b></td></tr><tr><td>현재 TQQQ 잔액</td><td>${usd(r.actual)}</td></tr><tr><td>차이</td><td>${usd(r.diff)}</td></tr>
+ <tr><td>거래</td><td><b>${fmt(Math.abs(r.qty),dp)}주 ${r.qty>0?'매수':r.qty<0?'매도':''}</b> (${usd(Math.abs(r.amount))})</td></tr>
+ <tr><td>거래 후 TQQQ</td><td>${fmt(r.newShares,dp)}주 · ${usd(r.newBal)}</td></tr><tr><td>거래 후 채권/현금</td><td>${usd(r.newCash)} (${pct(r.cashRatio)})</td></tr></table>
+ ${pending.note?`<div class="alert" style="margin-top:10px">${pending.note}</div>`:''}<button class="btn" onclick="confirmQ()">확인 후 기록</button>`;}
+function confirmQ(){if(!pending)return;S0.log.push(pending);pending=null;$('#qOut').innerHTML='✅ 기록되었습니다.';save();}
+function render(){const c=S0.cfg,dp=c.fractional?4:0,ed=(i,k,v)=>`<td contenteditable data-i="${i}" data-k="${k}">${v}</td>`;
+ $('#hist').innerHTML='<tr><th>날짜</th><th>가격</th><th>거래 전 주식</th><th>입금</th><th>목표</th><th>신호</th><th>수량</th><th>금액</th><th>거래 후 주식</th><th>TQQQ 잔액</th><th>채권/현금</th><th>총액</th><th>SPY</th><th>비고</th><th></th></tr>'+
+ S0.log.map((x,i)=>`<tr>${ed(i,'date',x.date)}${ed(i,'price',x.price)}${ed(i,'shares',x.shares)}${ed(i,'contrib',x.contrib||0)}<td>${x.target==null?'-':usd(x.target)}</td><td><span class="pill ${i===0?'p-hold':x.action==='매수'?'p-buy':x.action==='매도'?'p-sell':'p-hold'}">${i===0?'초기':x.action}</span></td>
+ ${ed(i,'qty',x.qty)}<td>${usd(x.amount)}</td><td>${fmt(x.newShares,dp)}</td><td>${usd(x.newBal)}</td>${ed(i,'newCash',x.newCash)}<td>${usd(x.newBal+x.newCash)}</td>${ed(i,'spy',x.spy??'')}<td class="note" contenteditable data-i="${i}" data-k="note">${x.note||''}</td><td><button class="btn r sm" onclick="del(${i})">삭제</button></td></tr>`).join('');
+ document.querySelectorAll('#hist [contenteditable]').forEach(e=>e.onblur=()=>{const x=S0.log[e.dataset.i],k=e.dataset.k,v=e.textContent.trim().replace(/[$,]/g,'');const nv=(k==='date'||k==='note')?e.textContent.trim():(v===''?null:+v);if(x[k]===nv)return;x[k]=nv;save();});
+ const L=S0.log.at(-1);if(L){$('#qShares').value=L.newShares;$('#qCash').value=L.newCash;}drawDash();}
+function del(i){if(confirm('이 행을 삭제할까요? 이후 목표는 재계산됩니다.')){S0.log.splice(i,1);save();}}
+function drawDash(){const L=S0.log.at(-1),c=S0.cfg;$('#first').hidden=!!L;document.querySelectorAll('#dash .grid').forEach(g=>g.hidden=!L);if(!L)return;const tot=L.newBal+L.newCash,first=S0.log[0],tot0=first.newBal+first.newCash,ch=tot/tot0-1;
+ $('#kTot').textContent=usd(tot);$('#kTotS').innerHTML=`시작 대비 <b style="color:var(${ch>=0?'--buy':'--sell'})">${ch>=0?'+':''}${pct(ch)}</b> · ${L.date} 기준`;
+ $('#kT').textContent=usd(L.newBal);$('#kTS').textContent=`${fmt(L.newShares,c.fractional?4:0)}주 × ${usd(L.price)}`;
+ $('#kB').textContent=usd(L.newCash);$('#kBS').textContent=`비중 ${pct(L.newCash/tot)} · 직접 수정 가능 (기록 탭)`;
+ const nd=Sig.nextQuarterEnd(L.date),today=new Date();today.setHours(0,0,0,0);const dd=Math.round((nd-today)/864e5);
+ $('#kD').textContent=dd>0?`D-${dd}`:dd===0?'D-DAY':`D+${-dd}`;$('#kDS').textContent=`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${nd.getDate()} (Q${Math.floor(nd.getMonth()/3)+1} 분기말)`;
+ const nt=L.newBal*(1+c.growth);$('#kN').textContent=usd(nt);$('#kNS').innerHTML=`${usd(L.newBal)} × 1.09 · 손익분기 TQQQ ≈ <b>${usd(nt/L.newShares)}</b>`;
+ $('#kL').innerHTML=`<span class="pill ${L.action==='매수'?'p-buy':L.action==='매도'?'p-sell':'p-hold'}" style="font-size:18px;padding:4px 14px">${S0.log.length>1?L.action:'초기'}</span> ${L.qty?fmt(Math.abs(L.qty),0)+'주':''}`;
+ $('#kLS').textContent=`${L.date} · ${usd(Math.abs(L.amount))}`+(L.thirty?.active?' · ⚠ 30 down 진행 중':'');
+ const tg=L.target;
+ $('#memo').innerHTML=(tg?`<div class="alert">최근 분기 목표 <b>${usd(tg)}</b> → 거래 후 TQQQ <b>${usd(L.newBal)}</b> (차이 ${usd(L.newBal-tg)}).</div>`:'')+`<p>기록 탭에서 값을 수정하면 이후 목표가 재계산됩니다.</p>`;
+ if(!window.Chart)return;Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');
+ chart('cd',{type:'doughnut',data:{labels:['TQQQ','채권/현금'],datasets:[{data:[L.newBal,L.newCash],backgroundColor:[css('--acc'),css('--acc2')],borderWidth:0}]},options:{maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right'},tooltip:{callbacks:{label:x=>`${x.label}: ${usd(x.raw)} (${pct(x.raw/tot)})`}}}}});
+ const lb=S0.log.map(x=>x.date).concat(`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${nd.getDate()} (목표)`);
+ chart('cdash',lineCfg(lb,[['TQQQ 잔액(거래 후)',S0.log.map(x=>x.newBal).concat(null),css('--acc')],['9% 시그널선',S0.log.map(x=>x.target??x.newBal).concat(nt),css('--buy'),1]]));}
+function dl(n,t,ty){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:ty}));a.download=n;a.click();}
+function exJSON(){dl('9sig.json',JSON.stringify(S0,null,1),'application/json');}
+function exCSV(){const k=['date','price','shares','contrib','target','action','qty','amount','newShares','newBal','newCash','spy','note'];dl('9sig.csv','\ufeff'+k.join(',')+'\n'+S0.log.map(x=>k.map(j=>JSON.stringify(x[j]??'')).join(',')).join('\n'),'text/csv');}
+function imJSON(f){const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.cfg||!Array.isArray(o.log))throw 0;S0=o;loadSetup();save();alert('가져오기 완료');}catch(e){alert('잘못된 파일');}};r.readAsText(f);}
+async function fetchPrice(){for(const u of['https://query1.finance.yahoo.com/v8/finance/chart/TQQQ?range=1d&interval=1d','https://stooq.com/q/l/?s=tqqq.us&f=sd2t2c&h&e=csv']){try{const t=await(await fetch(u)).text();const p=t.startsWith('{')?JSON.parse(t).chart.result[0].meta.regularMarketPrice:+t.trim().split('\n')[1].split(',').at(-1);if(p>0){$('#qPrice').value=p;return;}}catch(e){}}alert('가격 자동 조회 실패 (CORS/네트워크). 직접 입력하세요.');}
+function chart(id,cfg){const el=$('#'+id);if(!el)return;if(!window.Chart){el.parentElement.innerHTML='<p class="note">Chart.js를 불러오지 못했습니다(오프라인).</p>';return;}charts[id]?.destroy();charts[id]=new Chart(el,cfg);}
+function lineCfg(labels,sets,y){return{type:'line',data:{labels,datasets:sets.map(([l,d,col,dash])=>({label:l,data:d,borderColor:col,backgroundColor:col+'22',fill:!dash,borderDash:dash?[6,4]:[],pointRadius:3,pointHoverRadius:6,borderWidth:2.5,tension:.35,spanGaps:true}))},
+ options:{maintainAspectRatio:false,animation:{duration:700,easing:'easeOutQuart'},interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${y&&y.pct?x.raw.toFixed(1)+'%':usd(x.raw)}`}}},scales:{x:{grid:{display:false}},y:{type:y?.type||'linear',grid:{color:css('--line')}}}}};}
+function drawCharts(){const L=S0.log;if(!L.length)return;const lb=L.map(x=>x.date);
+ chart('c1',lineCfg(lb,[['총 포트폴리오',L.map(x=>x.newBal+x.newCash),css('--acc')]]));
+ chart('c2',lineCfg(lb,[['TQQQ 잔액(거래 전)',L.map((x,i)=>i?x.shares*x.price:x.newBal),css('--sell')],['9% 시그널선',L.map(x=>x.target??x.newBal),css('--buy'),1]]));
+ chart('c3',lineCfg(lb,[['채권/현금 비중 %',L.map(x=>100*x.newCash/(x.newBal+x.newCash)),css('--warn')]],{pct:1}));}
+function runBT(){const si=+$('#btStart').value||0,c={...S0.cfg};const r=Sig.backtest(DATA,c,si),dt=r.map(x=>x.date);
+ const rows=[['9Sig',r.map(x=>x.v)],['TQQQ 보유',r.map(x=>x.bh)],['QQQ 보유',r.map(x=>x.qqq)]].map(([n,v])=>{const s=Sig.stats(v,dt);return`<tr><td>${n}</td><td>${pct(s.cagr)}</td><td style="color:var(--sell)">${pct(s.mdd)}</td><td>${usd(v.at(-1),0)}</td></tr>`}).join('');
+ $('#btOut').innerHTML=`<p class="note">${dt[0]} ~ ${dt.at(-1)} (${Sig.stats(r.map(x=>x.v),dt).years.toFixed(1)}년) · 초기 $10,000 · TQQQ ${c.ratio*100}%</p><div class="tw"><table><tr><th>전략</th><th>CAGR</th><th>MDD (분기말)</th><th>최종</th></tr>${rows}</table></div>`;
+ chart('c4',lineCfg(dt,[['9Sig',r.map(x=>x.v),css('--acc')],['TQQQ 보유',r.map(x=>x.bh),css('--sell'),1],['QQQ 보유',r.map(x=>x.qqq),css('--mut'),1]],{type:'logarithmic'}));
+ $('#btLog').innerHTML='<tr><th>분기</th><th>총액</th><th>거래액</th><th>채권%</th><th>비고</th></tr>'+r.map(x=>`<tr><td>${x.date}</td><td>${fmt(x.v,0)}</td><td>${fmt(x.trade,0)}</td><td>${pct(x.cr)}</td><td class="note">${x.note||''}</td></tr>`).join('');}
+window.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));$('#theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+ $('#btStart').innerHTML=DATA.map((d,i)=>`<option value="${i}">${d[0]}</option>`).join('');$('#qDate').value=new Date().toISOString().slice(0,10);
+ loadSetup();Sig.recompute(S0.log,S0.cfg);setTheme(localStorage.getItem(KEY+'_theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));render();tab(S0.log.length?'dash':'setup');});
+</script></body></html>
