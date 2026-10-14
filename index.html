@@ -137,8 +137,10 @@ Sig.recompute=function(log,cfg){ for(let i=0;i<log.length;i++){ const x=log[i];
   if(i===0){x.target=null; continue;} const p=log[i-1];
   x.target=+(p.newBal*(1+cfg.growth)+(x.contrib||0)/2).toFixed(2); x.diff=+(x.target-x.shares*x.price).toFixed(2);
   x.action=x.qty>0?'매수':x.qty<0?'매도':'유지'; } return log; };
-Sig.nextQuarterEnd=function(dateStr){ const d=new Date(dateStr+'T00:00:00'); let m=Math.floor(d.getMonth()/3)*3+2; let e=new Date(d.getFullYear(),m+1,0);
-  if(e<=d){ e=new Date(d.getFullYear(),m+4,0);} return e; };
+// 12월 분기는 한국 해외주식 양도세 결제일 기준(연말 결제 마감 전)으로 12/23 매매
+Sig.qEnd=(y,m)=>m%12===11?new Date(y+Math.floor(m/12),11,23):new Date(y,m+1,0);
+Sig.nextQuarterEnd=function(dateStr){ const d=new Date(dateStr+'T00:00:00'); let m=Math.floor(d.getMonth()/3)*3+2; let e=Sig.qEnd(d.getFullYear(),m);
+  if(e<=d){ e=Sig.qEnd(d.getFullYear(),m+3);} return e; };
 const $=s=>document.querySelector(s),KEY='9sig_v1',fmt=(v,d=2)=>(v==null||isNaN(v))?'-':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}),usd=(v,d=2)=>(v<0?'-$':'$')+fmt(Math.abs(v),d),pct=v=>isNaN(v)?'-':(v*100).toFixed(1)+'%';
 const CFG0={start:'',capital:10000,ratio:.6,growth:.09,throttle:.9,skips:2,spikeReset:true,fractional:false,bondCap:0,price0:0};
 function seed(){return{cfg:{...CFG0},log:[]};}
