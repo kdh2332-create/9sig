@@ -23,7 +23,7 @@ input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid 
 td[contenteditable]{background:color-mix(in srgb,var(--acc) 7%,transparent);border-radius:4px;cursor:text}td.note{white-space:normal;min-width:200px;text-align:left}
 .sig{font-size:30px;font-weight:900;padding:10px 22px;border-radius:14px;display:inline-block;color:#fff}.sig.buy{background:var(--buy)}.sig.sell{background:var(--sell)}.sig.hold{background:var(--hold)}
 .note{font-size:13px;color:var(--mut);line-height:1.6}.alert{border-left:4px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6}
-.ch{position:relative;height:300px}.donut{position:relative;height:150px}.rules li{margin:8px 0;line-height:1.65}
+.ch{position:relative;height:300px}#cdash{cursor:zoom-in}.fx{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:12px}.fx[hidden]{display:none}.fxb{background:var(--card);color:var(--fg);border-radius:16px;width:min(1200px,100%);max-height:96vh;padding:14px;box-shadow:var(--sh);display:flex;flex-direction:column}.fxh{display:flex;align-items:center;gap:8px;margin-bottom:8px}.fxh h3{margin:0;flex:1}.fxs{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}.fxw{position:relative;height:min(460px,70vh)}.donut{position:relative;height:150px}.rules li{margin:8px 0;line-height:1.65}
 @media(max-width:900px){.s3{grid-column:span 6}.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
 @media(max-width:560px){.bar{flex-wrap:wrap;padding:10px 14px}nav{order:3;width:100%;margin:0}main{padding:14px}.grid{gap:12px}.s3{grid-column:span 12}.v{font-size:22px}.ch{height:240px}}
 </style></head><body>
@@ -47,7 +47,7 @@ td[contenteditable]{background:color-mix(in srgb,var(--acc) 7%,transparent);bord
 <div class="c s4"><div class="k">비중</div><div class="donut"><canvas id="cd"></canvas></div></div>
 <div class="c s4"><div class="k">다음 목표 TQQQ 잔액 (×1.09)</div><div class="v" id="kN"></div><div class="sub" id="kNS"></div></div>
 <div class="c s4"><div class="k">최근 신호</div><div class="v" id="kL"></div><div class="sub" id="kLS"></div></div>
-<div class="c s8"><h3>TQQQ 잔액 vs 9% 시그널선</h3><div class="ch"><canvas id="cdash"></canvas></div></div>
+<div class="c s8"><h3 style="display:flex;align-items:center;gap:8px"><span style="flex:1">TQQQ 잔액 vs 9% 시그널선 <span class="note" style="font-weight:400">· 최근 12개월</span></span><button class="btn g sm" onclick="openFull()">전체 보기</button></h3><div class="ch"><canvas id="cdash"></canvas></div></div>
 <div class="c s4"><h3>메모</h3><div id="memo" class="note"></div></div>
 </div></section>
 <section id="quarter" hidden><div class="grid"><div class="c s7"><h2>분기 입력</h2>
@@ -82,7 +82,7 @@ td[contenteditable]{background:color-mix(in srgb,var(--acc) 7%,transparent);bord
 <li>“채권 &gt; 40% 리밸런스”는 공식 규칙으로 확인되지 않아 기본 꺼진 선택 옵션.</li>
 <li>출처: jasonkelly.com/resources/strategies, jasonkelly.com/2023/02/tqqq-and-volatility-decay, jasonkelly.com/3sig, 『The 3% Signal』.</li>
 <li><b>실시간 가격</b>: Finnhub /quote API (무료 키, 브라우저 CORS 허용). 키는 이 브라우저 localStorage에만 저장되며 파일·서버에 포함되지 않습니다. 키 없는 무료 소스(Yahoo 등)는 브라우저 CORS를 막아 사용하지 않습니다. 실시간 신호 힌트는 참고용이며 자동 기록되지 않습니다.</li><li>⚠ 투자 조언 아님. 프랑스 거주자는 PRIIPs로 미국 ETF 매수가 제한될 수 있으며, 세금(PFU)·EUR/USD 환율은 계산하지 않습니다.</li></ol></div></section>
-</main><script>
+</main><div class="fx" id="fx" hidden onclick="if(event.target===this)closeFull()"><div class="fxb"><div class="fxh"><h3>TQQQ 잔액 vs 9% 시그널선 · 전체 기간</h3><button class="btn g sm" onclick="closeFull()">✕ 닫기</button></div><div class="fxs" id="fxs"><div class="fxw" id="fxw"><canvas id="cfull"></canvas></div></div><p class="note" style="margin:6px 0 0">← 좌우로 스크롤하세요 · 월말 평가액 = 해당 월말 보유 주식수 × 월말 종가</p></div></div><script>
 const DATA=[["2010-03-31", 0.2748, 41.7562, 87.4598, 65.2555], ["2010-06-30", 0.1825, 37.174, 77.5261, 67.7818], ["2010-09-30", 0.27, 42.8097, 86.1792, 69.2459], ["2010-12-31", 0.3654, 47.6062, 95.4528, 68.3078], ["2011-03-31", 0.4205, 50.2733, 101.0821, 68.2952], ["2011-06-30", 0.4063, 50.0526, 101.1082, 69.9131], ["2011-09-30", 0.2925, 46.1373, 87.1379, 72.7293], ["2011-12-31", 0.336, 49.2609, 97.2617, 73.5652], ["2012-03-31", 0.5912, 59.7031, 109.605, 73.6645], ["2012-06-30", 0.4941, 56.8372, 106.4877, 75.1185], ["2012-09-30", 0.5993, 60.9171, 113.2467, 76.3447], ["2012-12-31", 0.5116, 58.1833, 112.8141, 76.3275], ["2013-03-31", 0.6024, 61.7563, 124.6626, 76.3767], ["2013-06-30", 0.656, 64.0177, 128.3219, 74.3903], ["2013-09-30", 0.8903, 71.066, 135.0483, 74.8031], ["2013-12-31", 1.2265, 79.4983, 149.2618, 74.818], ["2014-03-31", 1.2146, 79.747, 151.8038, 76.1439], ["2014-06-30", 1.4783, 85.6527, 159.6354, 77.63], ["2014-09-30", 1.7102, 90.3179, 161.4469, 77.8439], ["2014-12-31", 1.9267, 94.7472, 169.3582, 79.306], ["2015-03-31", 2.0365, 97.1265, 170.8507, 80.51], ["2015-06-30", 2.1033, 98.7051, 171.1994, 79.0388], ["2015-09-30", 1.7241, 94.0381, 160.2016, 80.0972], ["2015-12-31", 2.2587, 103.6874, 171.4485, 79.6872], ["2016-03-31", 2.0248, 101.522, 173.7276, 82.1034], ["2016-06-30", 1.9046, 100.245, 177.9958, 83.917], ["2016-09-30", 2.5427, 110.9439, 184.7192, 84.2356], ["2016-12-31", 2.5158, 111.0471, 192.0187, 81.6107], ["2017-03-31", 3.4885, 124.3331, 203.3885, 82.2672], ["2017-06-30", 3.8622, 129.6256, 209.6342, 83.5684], ["2017-09-30", 4.5183, 137.2806, 218.8907, 84.1531], ["2017-12-31", 5.486, 147.319, 233.6972, 84.5101], ["2018-03-31", 5.6916, 151.6979, 231.3711, 83.2716], ["2018-06-30", 6.7756, 162.9593, 239.5904, 83.1192], ["2018-09-30", 8.4402, 176.7008, 257.9218, 83.049], ["2018-12-31", 4.4004, 147.133, 223.0195, 84.7981], ["2019-03-31", 6.7337, 171.6714, 253.1852, 87.2874], ["2019-06-30", 7.341, 178.8311, 263.8916, 89.7524], ["2019-09-30", 7.3244, 181.1781, 268.5213, 91.852], ["2019-12-31", 10.2897, 204.4583, 292.6549, 91.9683], ["2020-03-31", 5.6638, 183.4901, 235.7403, 94.8192], ["2020-06-30", 11.6093, 239.0292, 283.2696, 97.7379], ["2020-09-30", 15.5623, 268.2224, 308.8725, 98.1296], ["2020-12-31", 21.6137, 303.4288, 346.3033, 98.844], ["2021-03-31", 21.6993, 309.0314, 368.2997, 95.5111], ["2021-06-30", 29.1273, 343.6125, 399.0869, 97.2045], ["2021-09-30", 29.6195, 347.4195, 401.3757, 97.1932], ["2021-12-31", 39.5489, 386.628, 445.7919, 97.0984], ["2022-03-31", 27.6674, 352.7496, 425.221, 91.4222], ["2022-06-30", 11.4131, 273.2352, 356.7167, 87.2355], ["2022-09-30", 9.1876, 261.0108, 339.1264, 83.1334], ["2022-12-31", 8.2697, 260.6763, 364.7676, 84.4546], ["2023-03-31", 13.5875, 314.6625, 391.9728, 87.1843], ["2023-06-30", 19.7753, 362.7024, 425.9974, 86.3635], ["2023-09-30", 17.2409, 352.2643, 412.2626, 83.5831], ["2023-12-31", 24.6477, 403.6717, 460.2485, 89.2307], ["2024-03-31", 30.0352, 438.2479, 508.0686, 88.5743], ["2024-06-30", 36.1546, 473.644, 530.3174, 88.599], ["2024-09-30", 35.6176, 483.1798, 560.8179, 93.2956], ["2024-12-31", 39.0093, 506.9239, 574.788, 90.399], ["2025-03-31", 28.3309, 465.6637, 550.2625, 92.874], ["2025-06-30", 41.1527, 548.4244, 609.5653, 94.0575], ["2025-09-30", 51.3164, 597.5623, 659.0695, 95.9955], ["2025-12-31", 52.4107, 612.2249, 676.635, 96.9003], ["2026-03-31", 41.504, 575.9462, 647.0621, 96.9241], ["2026-06-30", 80.8437, 735.6335, 744.9202, 97.6204], ["2026-09-30", 78.03, 739.77, 762.63, 94.206], ["2026-10-12", 79.8099, 746.66, 778.31, 94.615]];
 // ===== 9Sig core logic (pure functions) =====
 const Sig = {
@@ -192,11 +192,7 @@ function drawDash(){const L=S0.log.at(-1),c=S0.cfg;$('#first').hidden=!!L;$('#li
  $('#memo').innerHTML=(tg?`<div class="alert">최근 분기 목표 <b>${usd(tg)}</b> → 거래 후 TQQQ <b>${usd(L.newBal)}</b> (차이 ${usd(L.newBal-tg)}).</div>`:'')+`<p>기록 탭에서 값을 수정하면 이후 목표가 재계산됩니다.</p>`;
  if(!window.Chart)return;Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');
  chart('cd',{type:'doughnut',data:{labels:['TQQQ','채권/현금'],datasets:[{data:[L.newBal,L.newCash],backgroundColor:[css('--acc'),css('--acc2')],borderWidth:0}]},options:{maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right'},tooltip:{callbacks:{label:x=>`${x.label}: ${usd(x.raw)} (${pct(x.raw/tot)})`}}}}});
- const lb=S0.log.map(x=>x.date).concat(`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${nd.getDate()} (목표)`);
- const lv=liveVal(),n0=S0.log.length;if(lv)lb.splice(n0,0,'현재 ('+lv.d+')');
- const ds=[['TQQQ 잔액(거래 후)',S0.log.map(x=>x.newBal).concat(lv?[null,null]:[null]),css('--acc')],['9% 시그널선',S0.log.map(x=>x.target??x.newBal).concat(lv?[null,nt]:[nt]),css('--buy'),1]];
- if(lv)ds.push(['현재 평가액 (TQQQ)',Array(n0-1).fill(null).concat([L.newBal,lv.tv,null]),css('--warn'),1]);
- chart('cdash',lineCfg(lb,ds));if(lv){const d=charts.cdash.data.datasets.at(-1);d.pointRadius=c2=>c2.dataIndex===n0?7:0;d.fill=false;charts.cdash.update();}}
+ chart('cdash',tqqqCfg(12));}
 function liveVal(){const L=S0.log.at(-1);if(!L||!LIVE.price)return null;const tv=L.newShares*LIVE.price,bond=+(S0.liveBond??L.newCash)||0,t=new Date(LIVE.t||Date.now());return{tv,tot:tv+bond,bond,d:`${t.getMonth()+1}/${t.getDate()}`};}
 function liveCharts(){const cur=document.querySelector('nav button.on')?.dataset.t;if(cur==='dash')drawDash();else if(cur==='charts')drawCharts();}
 function dl(n,t,ty){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:ty}));a.download=n;a.click();}
@@ -223,9 +219,32 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function chart(id,cfg){const el=$('#'+id);if(!el)return;if(!window.Chart){el.parentElement.innerHTML='<p class="note">Chart.js를 불러오지 못했습니다(오프라인).</p>';return;}charts[id]?.destroy();charts[id]=new Chart(el,cfg);}
 function lineCfg(labels,sets,y){return{type:'line',data:{labels,datasets:sets.map(([l,d,col,dash])=>({label:l,data:d,borderColor:col,backgroundColor:col+'22',fill:!dash,borderDash:dash?[6,4]:[],pointRadius:3,pointHoverRadius:6,borderWidth:2.5,tension:.35,spanGaps:true}))},
  options:{maintainAspectRatio:false,animation:{duration:700,easing:'easeOutQuart'},interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${y&&y.pct?x.raw.toFixed(1)+'%':usd(x.raw)}`}}},scales:{x:{grid:{display:false}},y:{type:y?.type||'linear',grid:{color:css('--line')}}}}};}
+// ===== 월말 종가 (./prices.json, GitHub Actions가 매일 갱신) =====
+let PRICES=null;async function loadPrices(){try{const r=await fetch('./prices.json',{cache:'no-cache'});if(!r.ok)throw 0;PRICES=await r.json();liveCharts();if(!$('#fx').hidden)openFull();}catch(e){PRICES=null;}}
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function tqqqData(months,pre){const L=S0.log;if(!L.length)return null;const c=S0.cfg,P=new Map(),put=(d,k,v)=>{if(!P.has(d))P.set(d,{});P.get(d)[k]=v;};
+ const today=iso(new Date()),start=L[0].date,lv=liveVal(),nd=iso(Sig.nextQuarterEnd(L.at(-1).date)),last=L.at(-1);
+ L.forEach((x,i)=>{put(x.date,'bal',x.newBal);put(x.date,'tg',x.target??x.newBal);if(pre)put(x.date,'pre',i?x.shares*x.price:x.newBal);});
+ const sharesAt=d=>{let s=null;for(const x of L)if(x.date<=d)s=x.newShares;return s;};
+ const mm=(PRICES?.monthly||[]).slice();const pl=PRICES?.last;
+ for(const m of mm){if(m.date<start)continue;const cm=m.date.slice(0,7)===today.slice(0,7);if(cm&&lv)continue;const sh=sharesAt(m.date);if(sh!=null)put(m.date,'mon',sh*m.close);if(cm)P.get(m.date).monLast=1;}
+ if(lv){put(today,'mon',lv.tv);put(today,'live',lv.tv);if(!pre&&!P.get(today).bal)put(last.date,'livefrom',1);}
+ put(nd,'tg',last.newBal*(1+c.growth));put(nd,'next',1);
+ let dates=[...P.keys()].sort();if(months){const t=new Date();t.setMonth(t.getMonth()-months);const cut=iso(t);const f=dates.filter(d=>d>=cut);dates=f.length>=2?f:dates.slice(-3);}
+ const lab=dates.map(d=>{const o=P.get(d);return d+(o.next?' (목표)':o.live?' (현재)':'');});const col=k=>dates.map(d=>P.get(d)[k]??null);
+ return{dates,lab,col,lv,P};}
+function tqqqCfg(months,pre){const D=tqqqData(months,pre);if(!D)return null;const sets=[];
+ if(pre)sets.push(['TQQQ 잔액(거래 전)',D.col('pre'),css('--sell')]);
+ sets.push(['TQQQ 잔액(거래 후)',D.col('bal'),css('--acc')],['9% 시그널선',D.col('tg'),css('--buy'),1],['월말 평가액 (보유주식×월말종가)',D.col('mon'),css('--warn'),1]);
+ const cfg=lineCfg(D.lab,sets);const ds=cfg.data.datasets,mi=ds.length-1;ds[mi].fill=false;ds[mi].borderDash=[];ds[mi].borderWidth=2;ds[mi].tension=.2;
+ ds[mi].pointRadius=x=>D.P.get(D.dates[x.dataIndex])?.live?7:2.5;
+ cfg.options.scales.x.ticks={autoSkip:true,maxRotation:0,callback(v){const l=this.getLabelForValue(v);return l.length>10?[l.slice(0,10),l.slice(11)]:l.slice(0,10);}};return cfg;}
+function openFull(){const fx=$('#fx');const cfg=tqqqCfg(0);if(!cfg)return;fx.hidden=false;const n=cfg.data.labels.length,w=Math.max($('#fxs').clientWidth,n*34);$('#fxw').style.width=w+'px';cfg.options.maintainAspectRatio=false;cfg.options.responsive=true;chart('cfull',cfg);const sc=$('#fxs');sc.scrollLeft=sc.scrollWidth;}
+function closeFull(){$('#fx').hidden=true;charts.cfull?.destroy();delete charts.cfull;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#fx').hidden)closeFull();});
 function drawCharts(){const L=S0.log;if(!L.length)return;const lv=liveVal(),lb=L.map(x=>x.date).concat(lv?['현재 ('+lv.d+')']:[]),a=lv?[1]:[];
  chart('c1',lineCfg(lb,[['총 포트폴리오',L.map(x=>x.newBal+x.newCash).concat(a.map(()=>lv.tot)),css('--acc')]]));
- chart('c2',lineCfg(lb,[['TQQQ 잔액(거래 전)',L.map((x,i)=>i?x.shares*x.price:x.newBal).concat(a.map(()=>lv.tv)),css('--sell')],['9% 시그널선',L.map(x=>x.target??x.newBal).concat(a.map(()=>null)),css('--buy'),1]]));
+ chart('c2',tqqqCfg(0,1));
  chart('c3',lineCfg(lb,[['채권/현금 비중 %',L.map(x=>100*x.newCash/(x.newBal+x.newCash)).concat(a.map(()=>100*lv.bond/lv.tot)),css('--warn')]],{pct:1}));}
 function runBT(){const si=+$('#btStart').value||0,c={...S0.cfg};const r=Sig.backtest(DATA,c,si),dt=r.map(x=>x.date);
  const rows=[['9Sig',r.map(x=>x.v)],['TQQQ 보유',r.map(x=>x.bh)],['QQQ 보유',r.map(x=>x.qqq)]].map(([n,v])=>{const s=Sig.stats(v,dt);return`<tr><td>${n}</td><td>${pct(s.cagr)}</td><td style="color:var(--sell)">${pct(s.mdd)}</td><td>${usd(v.at(-1),0)}</td></tr>`}).join('');
@@ -234,5 +253,5 @@ function runBT(){const si=+$('#btStart').value||0,c={...S0.cfg};const r=Sig.back
  $('#btLog').innerHTML='<tr><th>분기</th><th>총액</th><th>거래액</th><th>채권%</th><th>비고</th></tr>'+r.map(x=>`<tr><td>${x.date}</td><td>${fmt(x.v,0)}</td><td>${fmt(x.trade,0)}</td><td>${pct(x.cr)}</td><td class="note">${x.note||''}</td></tr>`).join('');}
 window.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));$('#theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
  $('#btStart').innerHTML=DATA.map((d,i)=>`<option value="${i}">${d[0]}</option>`).join('');$('#qDate').value=new Date().toISOString().slice(0,10);
- loadSetup();Sig.recompute(S0.log,S0.cfg);setTheme(localStorage.getItem(KEY+'_theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));render();tab(S0.log.length?'dash':'setup');$('#lvBond').oninput=e=>{S0.liveBond=+e.target.value;localStorage.setItem(KEY,JSON.stringify(S0));drawLive();};liveRefresh();liveStart();});
+ loadSetup();Sig.recompute(S0.log,S0.cfg);setTheme(localStorage.getItem(KEY+'_theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));render();tab(S0.log.length?'dash':'setup');$('#lvBond').oninput=e=>{S0.liveBond=+e.target.value;localStorage.setItem(KEY,JSON.stringify(S0));drawLive();};liveRefresh();liveStart();loadPrices();$('#cdash').onclick=openFull;});
 </script></body></html>
