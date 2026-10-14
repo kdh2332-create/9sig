@@ -191,7 +191,12 @@ function drawDash(){const L=S0.log.at(-1),c=S0.cfg;$('#first').hidden=!!L;$('#li
  if(!window.Chart)return;Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');
  chart('cd',{type:'doughnut',data:{labels:['TQQQ','채권/현금'],datasets:[{data:[L.newBal,L.newCash],backgroundColor:[css('--acc'),css('--acc2')],borderWidth:0}]},options:{maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right'},tooltip:{callbacks:{label:x=>`${x.label}: ${usd(x.raw)} (${pct(x.raw/tot)})`}}}}});
  const lb=S0.log.map(x=>x.date).concat(`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${nd.getDate()} (목표)`);
- chart('cdash',lineCfg(lb,[['TQQQ 잔액(거래 후)',S0.log.map(x=>x.newBal).concat(null),css('--acc')],['9% 시그널선',S0.log.map(x=>x.target??x.newBal).concat(nt),css('--buy'),1]]));}
+ const lv=liveVal(),n0=S0.log.length;if(lv)lb.splice(n0,0,'현재 ('+lv.d+')');
+ const ds=[['TQQQ 잔액(거래 후)',S0.log.map(x=>x.newBal).concat(lv?[null,null]:[null]),css('--acc')],['9% 시그널선',S0.log.map(x=>x.target??x.newBal).concat(lv?[null,nt]:[nt]),css('--buy'),1]];
+ if(lv)ds.push(['현재 평가액 (TQQQ)',Array(n0-1).fill(null).concat([L.newBal,lv.tv,null]),css('--warn'),1]);
+ chart('cdash',lineCfg(lb,ds));if(lv){const d=charts.cdash.data.datasets.at(-1);d.pointRadius=c2=>c2.dataIndex===n0?7:0;d.fill=false;charts.cdash.update();}}
+function liveVal(){const L=S0.log.at(-1);if(!L||!LIVE.price)return null;const tv=L.newShares*LIVE.price,bond=+(S0.liveBond??L.newCash)||0,t=new Date(LIVE.t||Date.now());return{tv,tot:tv+bond,bond,d:`${t.getMonth()+1}/${t.getDate()}`};}
+function liveCharts(){const cur=document.querySelector('nav button.on')?.dataset.t;if(cur==='dash')drawDash();else if(cur==='charts')drawCharts();}
 function dl(n,t,ty){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:ty}));a.download=n;a.click();}
 function exJSON(){dl('9sig.json',JSON.stringify(S0,null,1),'application/json');}
 function exCSV(){const k=['date','price','shares','contrib','target','action','qty','amount','newShares','newBal','newCash','spy','note'];dl('9sig.csv','\ufeff'+k.join(',')+'\n'+S0.log.map(x=>k.map(j=>JSON.stringify(x[j]??'')).join(',')).join('\n'),'text/csv');}
@@ -201,7 +206,7 @@ async function fetchPrice(){await liveRefresh();if(LIVE.price)$('#qPrice').value
 const FHKEY=KEY+'_finnhub';let LIVE={price:null,dp:null,t:null,err:null},liveTimer=null;
 async function liveRefresh(){const k=localStorage.getItem(FHKEY);$('#lvNoKey').hidden=!!k;if(!k){drawLive();return;}
  try{const r=await fetch('https://finnhub.io/api/v1/quote?symbol=TQQQ&token='+encodeURIComponent(k));if(!r.ok)throw new Error('HTTP '+r.status+(r.status===401?' (API 키 확인)':r.status===429?' (요청 한도 초과)':''));const j=await r.json();if(!(j.c>0))throw new Error('가격 데이터 없음');LIVE={price:j.c,dp:j.dp,d:j.d,t:j.t?j.t*1000:Date.now(),err:null};}
- catch(e){LIVE.err='실시간 조회 실패: '+e.message;}drawLive();}
+ catch(e){LIVE.err='실시간 조회 실패: '+e.message;}drawLive();if(LIVE.price)liveCharts();}
 function drawLive(){const L=S0.log.at(-1);if(!L||!$('#live'))return;const c=S0.cfg;if(S0.liveBond==null)S0.liveBond=L.newCash;const bi=$('#lvBond');if(document.activeElement!==bi)bi.value=S0.liveBond;
  const P=LIVE.price,sh=L.newShares,bond=+S0.liveBond||0;
  $('#lvUpd').textContent=LIVE.err?'⚠ '+LIVE.err:LIVE.t?'· 업데이트 '+new Date(LIVE.t).toLocaleString('ko-KR',{dateStyle:'short',timeStyle:'medium'})+' (현지 시간)':'';
@@ -216,10 +221,10 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function chart(id,cfg){const el=$('#'+id);if(!el)return;if(!window.Chart){el.parentElement.innerHTML='<p class="note">Chart.js를 불러오지 못했습니다(오프라인).</p>';return;}charts[id]?.destroy();charts[id]=new Chart(el,cfg);}
 function lineCfg(labels,sets,y){return{type:'line',data:{labels,datasets:sets.map(([l,d,col,dash])=>({label:l,data:d,borderColor:col,backgroundColor:col+'22',fill:!dash,borderDash:dash?[6,4]:[],pointRadius:3,pointHoverRadius:6,borderWidth:2.5,tension:.35,spanGaps:true}))},
  options:{maintainAspectRatio:false,animation:{duration:700,easing:'easeOutQuart'},interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${y&&y.pct?x.raw.toFixed(1)+'%':usd(x.raw)}`}}},scales:{x:{grid:{display:false}},y:{type:y?.type||'linear',grid:{color:css('--line')}}}}};}
-function drawCharts(){const L=S0.log;if(!L.length)return;const lb=L.map(x=>x.date);
- chart('c1',lineCfg(lb,[['총 포트폴리오',L.map(x=>x.newBal+x.newCash),css('--acc')]]));
- chart('c2',lineCfg(lb,[['TQQQ 잔액(거래 전)',L.map((x,i)=>i?x.shares*x.price:x.newBal),css('--sell')],['9% 시그널선',L.map(x=>x.target??x.newBal),css('--buy'),1]]));
- chart('c3',lineCfg(lb,[['채권/현금 비중 %',L.map(x=>100*x.newCash/(x.newBal+x.newCash)),css('--warn')]],{pct:1}));}
+function drawCharts(){const L=S0.log;if(!L.length)return;const lv=liveVal(),lb=L.map(x=>x.date).concat(lv?['현재 ('+lv.d+')']:[]),a=lv?[1]:[];
+ chart('c1',lineCfg(lb,[['총 포트폴리오',L.map(x=>x.newBal+x.newCash).concat(a.map(()=>lv.tot)),css('--acc')]]));
+ chart('c2',lineCfg(lb,[['TQQQ 잔액(거래 전)',L.map((x,i)=>i?x.shares*x.price:x.newBal).concat(a.map(()=>lv.tv)),css('--sell')],['9% 시그널선',L.map(x=>x.target??x.newBal).concat(a.map(()=>null)),css('--buy'),1]]));
+ chart('c3',lineCfg(lb,[['채권/현금 비중 %',L.map(x=>100*x.newCash/(x.newBal+x.newCash)).concat(a.map(()=>100*lv.bond/lv.tot)),css('--warn')]],{pct:1}));}
 function runBT(){const si=+$('#btStart').value||0,c={...S0.cfg};const r=Sig.backtest(DATA,c,si),dt=r.map(x=>x.date);
  const rows=[['9Sig',r.map(x=>x.v)],['TQQQ 보유',r.map(x=>x.bh)],['QQQ 보유',r.map(x=>x.qqq)]].map(([n,v])=>{const s=Sig.stats(v,dt);return`<tr><td>${n}</td><td>${pct(s.cagr)}</td><td style="color:var(--sell)">${pct(s.mdd)}</td><td>${usd(v.at(-1),0)}</td></tr>`}).join('');
  $('#btOut').innerHTML=`<p class="note">${dt[0]} ~ ${dt.at(-1)} (${Sig.stats(r.map(x=>x.v),dt).years.toFixed(1)}년) · 초기 $10,000 · TQQQ ${c.ratio*100}%</p><div class="tw"><table><tr><th>전략</th><th>CAGR</th><th>MDD (분기말)</th><th>최종</th></tr>${rows}</table></div>`;
